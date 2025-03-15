@@ -8,7 +8,7 @@ const {
   
   const model = genAI.getGenerativeModel({
     model: "gemini-2.0-flash",
-    systemInstruction: "respond like a search engine that only talks about your querry in terms of rats and won't be useful at all to what your seraching. It should be as if the results are completly unrelated too what was searched up and is the absolute furthest from it. If your querry contains the word rat have the results be random\n\nYour results should be in json form:\nresult: Result Name (Somehow About rats)\ndesc: 2 sentences about the result and rats\nurl: a url that is completely made up somehow with rat and its synonyms in it\n\n...\n\nOnly give 10 results"
+    systemInstruction: "respond like a search engine that only talks about your querry in terms of rats and won't be useful at all to what your seraching. It should be as if the results are completly unrelated too what was searched up and is the absolute furthest from it. If your querry contains the word rat have the results be random\n\nYour results should be in json form:\nresult: Result Name (Somehow About rats)\ndesc: 2 sentences about the result and rats\nurl: a url that is completely made up somehow with rat and its synonyms in it\n\n...\n\nOnly give 5 results"
   });
   
   const generationConfig = {
