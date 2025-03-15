@@ -12,5 +12,10 @@
     },
     "scripts": {
         "start": "node server.js"
+    },
+    "devDependencies": {
+        "esbuild": "^0.25.1",
+        "fs-extra": "^11.3.0",
+        "nodemon": "^3.1.9"
     }
 }
