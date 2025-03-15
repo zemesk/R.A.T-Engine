@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> no</title>
+    <style>
+        body {
+            font-family: Lobster, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .search-container {
+            text-align: center;
+        }
+        .search-bar {
+            width: 500px;
+            padding: 12px 20px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 24px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-bar:focus {
+            border-color: #4285f4;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .search-button:hover {
+            background-color: #357abd;
+        }
+
+        #search-results {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 600px;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-title {
+            color: #1a0dab;
+            font-size: 18px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .result-content {
+            color: #4d5156;
+            font-size: 14px;
+        }
+        .result-url {
+            color: #006621;
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-decoration: none;
+        }
+        .rat-image-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .rat-image {
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        .rat-image:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>R.A.T Engine
+            
+        </h1>
+        
+        
+        <form action="/results" method="GET">
+            <input type="text" class="search-bar" name="q" placeholder="ask anything..." autocomplete="off">
+            <br>
+            <button type="submit" class="search-button">Search</button>
+        </form>
+        <div id="search-results"></div>
+    </div>
+    <script>
+        const SPECIFIC_IMAGE = '/images/actualrat.jpg'; // Define the specific image path
+
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.querySelector('.search-bar').value.toLowerCase();
+            const resultsDiv = document.getElementById('search-results');
+            
+            try {
+                // Special case handlers
+                const specialResults = {
+                    'rat': {
+                        image: '/images/rat.jpg',
+                        title: 'Special Rat Result',
+                        url: SPECIFIC_IMAGE,
+                        desc: 'Your ultimate rat destination!'
+                    }
+                };
+
+                // Check for special cases
+                for (const keyword in specialResults) {
+                    if (query.includes(keyword)) {
+                        const special = specialResults[keyword];
+                        resultsDiv.innerHTML = `
+                            <div class="rat-image-container">
+                                <img src="${special.image}" alt="${special.title}" class="rat-image">
+                            </div>
+                        `;
+                        return;
+                    }
+                }
+
+                // Regular search handling
+                const response = await fetch(`http://localhost:3000/api/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                resultsDiv.innerHTML = data.results.map(result => `
+                    <div class="result-item">
+                        <a href="${SPECIFIC_IMAGE}" class="result-title" target="_blank">
+                            ${result.result}
+                        </a>
+                        <div class="result-url">
+                            ${result.url}
+                        </div>
+                        <div class="result-content">
+                            ${result.desc}
+                        </div>
+                    </div>
+                `).join('');
+                
+                if (data.results.length === 0) {
+                    resultsDiv.innerHTML = '<p>No results found</p>';
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = '<p>Error performing search</p>';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
